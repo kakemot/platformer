@@ -1,15 +1,17 @@
-var player;
-var gravity = 0.4;
-var wall = [];
-
 function setup() {
+    limbpng = loadImage("/img/limb.png");
+    headpng = loadImage("/img/head.png");
+    legpng = loadImage("/img/leg.png");
+    bodypng = loadImage("/img/body.png");
+
     createCanvas(1200, 700);
 
     wall.push(new Wall(1, 500, 300, 64));
     wall.push(new Wall(400, 500, 700, 64));
     wall.push(new Wall(450, 322, 300, 100));
     wall.push(new Wall(810, 372, 64, 64));
-    player = new Player(30, 10);
+    player = new AnimatedBody(50, 100);
+    player.buildBody();
 }
 
 function draw() {
@@ -27,7 +29,7 @@ function displayObjects() {
 
 function update() {
     player.update();
-    keyboardInput();
+    keyboardInput(player.player);
 }
 
 function windowResized() {

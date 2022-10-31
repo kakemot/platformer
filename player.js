@@ -1,11 +1,11 @@
 class Player {
-    constructor(x,y) {
+    constructor(x,y,w,h) {
         this.x = x;
         this.y = y;
         this.prevx = x;
         this.prevy = y;
-        this.width = 55;
-        this.height = 55;
+        this.width = w;
+        this.height = h;
         this.vspeed = 0;
         this.hspeed = 0;
         this.maxSpeed = 5;
