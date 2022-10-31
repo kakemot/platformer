@@ -7,13 +7,25 @@ class AnimatedBody {
         this.player = new Player(this.x, this.y, 16, 118);
         this.created = false;
         this.currentFrame = 0;
+        this.play = true;
     }
 
     update() {
+
+        if (this.player.hspeed != 0) {
+            this.play = true;
+        } else {this.play = false }
+
         if (this.created) {
             this.player.update();
             this.limbs[6].x = this.player.x;
             this.limbs[6].y = this.player.y;
+
+            if (this.play == true) {
+                this.currentFrame = (this.currentFrame == this.frames.length - 1 ? 0 : this.currentFrame + 1);
+                this.setBodyPositionToFrame();
+              }
+
         }
     }
 
@@ -98,14 +110,58 @@ class AnimatedBody {
             this.limbs.push(foot_r);
             this.created = true;
             //updateValue();
-            frames.push(new Frame(true));
-            this.setInitialBodyPosition();
+            this.frames.push(new Frame(true));
+            this.setBodyPositionToFrame();
+            this.setAnimation(walking);
         }
 
-
-        setInitialBodyPosition() {
+        setBodyPositionToFrame() {
             for (let i = 0; i < this.limbs.length; i++) {
-                this.limbs[i].setRotation(frames[currentFrame].value[i]);
+                this.limbs[i].setRotation(this.frames[this.currentFrame].value[i]);
             }
         }
+
+        setAnimation(animation) {
+            this.frames = animation.frames;
+            this.calculateFrameValues();
+        }
+        
+        calculateFrameValues() {
+            var keyframeStartValue = 90;
+            var count = 1;
+            for (let l = 0; l<this.limbs.length; l++) {
+              for (let i = 0; i<this.frames.length; i++) {
+                if (this.frames[i].isKeyframe == true) {
+                  keyframeStartValue = this.frames[i].value[l];
+                  count = 1;
+                } else {
+                  var obj = this.getDistanceToNextKeyFrame(i, l);
+                  var result = keyframeStartValue + Math.round((obj.value - keyframeStartValue) / obj.originalDistance * count);
+                  this.frames[i].value[l] = result;
+                  count ++;
+                }
+              }
+            }
+          }
+
+            getDistanceToNextKeyFrame(frame = 0, limb = 0) {
+            var keyframeValue = 0;
+            for (let i = frame; i<this.frames.length; i++) {
+              if (this.frames[i].isKeyframe) {
+                var distance = i - frame; //get distance from current frame
+                var originalDistance = i - this.getPreviousKeyFrame(frame); //get distance from keyframe to keyframe
+                keyframeValue = this.frames[i].value[limb];
+              return {originalDistance: originalDistance, distance: distance, value: keyframeValue};
+              }
+            }
+              return {distance: 0, value: 0};
+            }
+          
+            getPreviousKeyFrame(frame) {
+              for (let i = frame; i>=0; i--) {
+                if (this.frames[i].isKeyframe) {
+                  return i;
+                }
+              }
+            }
 }
