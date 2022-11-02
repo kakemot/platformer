@@ -12,7 +12,6 @@ class Player {
         this.acceleration = 1;
         this.direction = 0;
         this.friction = 0.5;
-        this.isColliding = false;
         this.gravityMultiplier = 1;
     }
 

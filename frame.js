@@ -1,7 +1,6 @@
 class Frame {
     constructor(keyframe) {
         this.isKeyframe = keyframe;
-        this.html;
         this.value = [];
         this.value[0] = 90; //left upperarm
         this.value[1] = 90; //left lowerarm

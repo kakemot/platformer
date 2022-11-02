@@ -8,13 +8,22 @@ class AnimatedBody {
         this.created = false;
         this.currentFrame = 0;
         this.play = true;
+        this.currentAnimation = idle;
+        this.canChange = true;
     }
 
     update() {
+      if (this.frames.length - 1 == this.currentFrame) {
+        this.frames = JSON.parse(JSON.stringify(this.currentAnimation.frames));
+        this.currentFrame = 0;
+        this.canChange = true;
+      }
 
         if (this.player.hspeed != 0) {
-            this.play = true;
-        } else {this.play = false }
+          this.changeAnimation(walking);
+        } else {
+          this.changeAnimation(idle);
+        }
 
         if (this.created) {
             this.player.update();
@@ -25,7 +34,6 @@ class AnimatedBody {
                 this.currentFrame = (this.currentFrame == this.frames.length - 1 ? 0 : this.currentFrame + 1);
                 this.setBodyPositionToFrame();
               }
-
         }
     }
 
@@ -112,7 +120,7 @@ class AnimatedBody {
             //updateValue();
             this.frames.push(new Frame(true));
             this.setBodyPositionToFrame();
-            this.setAnimation(walking);
+            this.setAnimation(this.currentAnimation);
         }
 
         setBodyPositionToFrame() {
@@ -121,9 +129,34 @@ class AnimatedBody {
             }
         }
 
+        changeAnimation(animation) {
+          if (this.currentAnimation != animation) {
+            this.currentAnimation = animation;
+            console.log(animation);
+            this.interpolateAnimation(animation);
+            this.calculateFrameValues();
+          }
+          this.canChange = false;
+        }
+
         setAnimation(animation) {
             this.frames = animation.frames;
             this.calculateFrameValues();
+        }
+
+        //Add some empty frames and merge with the next animation
+        interpolateAnimation(nextanimation) {
+            let startFrame = this.frames[this.currentFrame];
+            this.frames = this.frames.splice(0, this.currentFrame);
+            startFrame.isKeyframe = true;
+            let emptyframes = [];
+            emptyframes.push(new Frame(false));
+            emptyframes.push(new Frame(false));
+            emptyframes.push(new Frame(false));
+
+            let newframes = this.frames.concat(startFrame, emptyframes, nextanimation.frames);
+            this.frames = newframes;
+            console.log(this.frames);
         }
         
         calculateFrameValues() {
