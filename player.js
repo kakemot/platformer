@@ -8,11 +8,21 @@ class Player {
         this.height = h;
         this.vspeed = 0;
         this.hspeed = 0;
-        this.maxSpeed = 5;
+        this.maxSpeed = 3;
         this.acceleration = 1;
         this.direction = 0;
         this.friction = 0.5;
         this.gravityMultiplier = 1;
+        this.status = "idle";
+        this.crouching = false;
+        this.waitFrames = 0;
+    }
+
+    changeStatus(status, waitFrames = 0) {
+        if (this.waitFrames == 0) {
+            this.status = status;
+            this.waitFrames = waitFrames;
+        }
     }
 
     //Draw the player
@@ -24,18 +34,48 @@ class Player {
     jump() {
         if (this.vspeed == 0) {
             this.gravityMultiplier = 1;
-            this.vspeed = -12;
+            this.vspeed = -10;
+            this.crouching = false;
+            this.changeStatus("jumping");
         }
+    }
+
+    crouch() {
+        this.crouching = true;
+    }
+
+    kick() {
+        this.changeStatus("kicking");
     }
 
     //Moves and accelerates the player
     move(direction) {
+        if (this.status != "jumping" && this.status != "falling" && this.crouching == false) {
+            let newStatus = this.direction > 0 ? "running" : "backwards";
+            this.changeStatus(newStatus);
+            console.log(this.status);
+        }
+
+        if (this.status != "jumping" && this.status != "falling" && this.crouching == true) {
+            this.changeStatus("crouchwalking");
+        }
         this.hspeed += this.acceleration;
         this.direction = direction;
     }
 
     // Increment gravity, friction, start collision check
     update() {
+        if (this.vspeed > 1) {
+            this.changeStatus("falling");
+        }
+
+        this.waitFrames = this.waitFrames == 0 ? this.waitFrames = 0 : this.waitFrames -= 1;
+        console.log(this.waitFrames);
+        if (this.hspeed == 0 && this.status != "jumping" && this.status != "falling") {
+            let newStatus = this.crouching ? "crouchidle" : "idle";
+            this.changeStatus(newStatus);
+        }
+
         this.x += this.hspeed * this.direction;
         this.hspeed = Math.max(this.hspeed - this.friction, 0);
         this.hspeed = Math.min(this.hspeed, this.maxSpeed);
@@ -62,6 +102,9 @@ class Player {
     snap(obj) {
         if (this.prevy + this.height - this.vspeed < obj.y) {
             this.snapOnTop(obj);
+            if (this.status == "jumping" || this.status == "falling") {
+                this.changeStatus("landing", 5);
+            }
         }
         else 
         if (this.prevy - this.vspeed > obj.y + obj.height) {
@@ -77,6 +120,9 @@ class Player {
         this.gravityMultiplier = 0;
         this.y = obj.y - this.height-1;
         this.vspeed = 0;
+        if (this.status == "jumping") {
+            this.status == "landing";
+        }
     }
 
     //Snap to bottom edge and upward motion

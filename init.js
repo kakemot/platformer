@@ -16,5 +16,5 @@ let limbs = [];
 let frames = [];
 let play = false;
 let currentFrame = 0;
-let fps = 30;
+let fps = 60;
 let fpsCount = 0;

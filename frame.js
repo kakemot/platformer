@@ -14,5 +14,6 @@ class Frame {
         this.value[9] = 90; //right upperleg
         this.value[10] = 90; //right lowerleg
         this.value[11] = 0; //right foot
+        this.relativeY = 0;
     }
 }

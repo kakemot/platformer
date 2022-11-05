@@ -23,7 +23,7 @@ class Limb {
         push();
 
         if (this.hasParent) {
-          var degtorad = this.parent.rotation * (Math.PI/180);
+          var degtorad = (this.parent.rotation) * (Math.PI/180);
 
           var rotatedxoffset = this.xoffset * Math.cos(degtorad) - this.yoffset * Math.sin(degtorad);
           var rotatedyoffset = this.xoffset * Math.sin(degtorad) + this.yoffset * Math.cos(degtorad);

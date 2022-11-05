@@ -1,7 +1,7 @@
 function keyboardInput(object) {
 
   if (keyIsDown(LEFT_ARROW)) {
-    object.move(-2);
+    object.move(-1);
   }
 
   if (keyIsDown(RIGHT_ARROW)) {
@@ -10,5 +10,13 @@ function keyboardInput(object) {
 
   if (keyIsDown(UP_ARROW)) {
     object.jump();
+  }
+
+  if (keyIsDown(DOWN_ARROW)) {
+    object.crouch();
+  }
+
+  if (keyIsDown(CONTROL)) {
+    object.kick();
   }
 }
