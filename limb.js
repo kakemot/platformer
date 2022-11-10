@@ -41,8 +41,7 @@ class Limb {
           tint(0, 153, 204);
         }
         //rect(0, 0, this.w, this.h);
-        image(this.sprite, 0, 0, this.w, this.h);
-        
+        image(this.sprite, 0, 0, this.w, this.h);  
         pop();
       }
 

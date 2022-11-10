@@ -4,7 +4,7 @@ class AnimatedBody {
         this.y = y;
         this.limbs = [];
         this.frames = [];
-        this.player = new Player(this.x, this.y, 16, 83);
+        this.player;
         this.created = false;
         this.currentFrame = 0;
         this.play = true;
@@ -27,6 +27,10 @@ class AnimatedBody {
         this.frames = JSON.parse(JSON.stringify(this.currentAnimation.frames));
         this.currentFrame = 0;
         this.canChange = true;
+      }
+
+      if (this.player.status == "breaking") {
+        this.changeAnimation(breaking);
       }
 
       if (this.player.status == "falling") {

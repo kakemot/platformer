@@ -44,8 +44,18 @@ class Player {
         this.crouching = true;
     }
 
+    stand() {
+        this.crouching = false;
+    }
+
     kick() {
         this.changeStatus("kicking");
+    }
+
+    stopmove() {
+        if (this.status == "running") {
+            this.changeStatus("breaking");
+        }
     }
 
     //Moves and accelerates the player
